@@ -65,6 +65,21 @@ function DashboardContent() {
 
   const router = useRouter();
 
+  const loadWebsites = useCallback(async () => {
+    try {
+      console.log('🔄 Loading websites for user:', user?.id);
+      const userWebsites = await getWebsites();
+      console.log('✅ Loaded websites:', userWebsites);
+      console.log('📊 Number of websites:', userWebsites?.length || 0);
+      setWebsites(userWebsites || []);
+    } catch (error) {
+      console.error('❌ Failed to load websites:', error);
+      setWebsites([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [getWebsites, user?.id]);
+
   useEffect(() => {
     loadWebsites();
     loadSubscription();
@@ -84,23 +99,6 @@ function DashboardContent() {
       loadWebsites();
     }
   }, [user?.onboardingCompleted, loadWebsites, user]);
-
-
-
-  const loadWebsites = useCallback(async () => {
-    try {
-      console.log('🔄 Loading websites for user:', user?.id);
-      const userWebsites = await getWebsites();
-      console.log('✅ Loaded websites:', userWebsites);
-      console.log('📊 Number of websites:', userWebsites?.length || 0);
-      setWebsites(userWebsites || []);
-    } catch (error) {
-      console.error('❌ Failed to load websites:', error);
-      setWebsites([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [getWebsites, user?.id]);
 
   const handleLogout = () => {
     logout();

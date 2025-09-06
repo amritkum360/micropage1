@@ -31,6 +31,8 @@ export default function ProtectedRoute({ children }) {
       setShowOnboarding(true);
     } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
       console.log('✅ User onboarding completed - allowing dashboard access');
+    } else if (loading) {
+      console.log('⏳ ProtectedRoute - Still loading authentication...');
     }
   }, [isAuthenticated, loading, user, router, navigateWithLoader]);
 

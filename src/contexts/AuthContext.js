@@ -23,15 +23,35 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is logged in on app start
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+    try {
+      console.log('🔍 AuthContext - Initializing authentication...');
+      const savedToken = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      
+      console.log('🔍 AuthContext - Saved token:', savedToken ? 'Found' : 'Not found');
+      console.log('🔍 AuthContext - Saved user:', savedUser ? 'Found' : 'Not found');
+      
+      if (savedToken && savedUser) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          setToken(savedToken);
+          setUser(parsedUser);
+          console.log('✅ AuthContext - User authenticated from localStorage');
+        } catch (parseError) {
+          console.error('❌ AuthContext - Failed to parse user data:', parseError);
+          // Clear invalid data
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      } else {
+        console.log('ℹ️ AuthContext - No saved authentication found');
+      }
+    } catch (error) {
+      console.error('❌ AuthContext - Error during initialization:', error);
+    } finally {
+      setLoading(false);
+      console.log('✅ AuthContext - Loading set to false');
     }
-    
-    setLoading(false);
   }, []);
 
   // Login function
@@ -742,6 +762,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const isAuthenticated = !!token;
+  
+  // Debug logging for authentication state
+  useEffect(() => {
+    console.log('🔍 AuthContext - State update:', {
+      token: token ? 'Present' : 'Missing',
+      user: user ? 'Present' : 'Missing',
+      loading,
+      isAuthenticated
+    });
+  }, [token, user, loading, isAuthenticated]);
+
   const value = {
     user,
     token,
@@ -771,7 +803,7 @@ export const AuthProvider = ({ children }) => {
     checkDomainDNS,
     updateProfile,
     completeOnboarding,
-    isAuthenticated: !!token,
+    isAuthenticated,
   };
 
   return (
