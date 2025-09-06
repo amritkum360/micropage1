@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { uploadImageToServer, isImageUploaded, getImageSrc, getImageMetadata } from '@/utils/imageUtils';
 
@@ -80,7 +81,7 @@ export default function PopupForm({ section, onInputChange, sectionKey = 'popup'
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., contact-popup, pricing-popup"
             />
-            <p className="text-xs text-gray-500 mt-1">Use this ID in button href="#contact-popup" to trigger this popup</p>
+            <p className="text-xs text-gray-500 mt-1">Use this ID in button href=&quot;#contact-popup&quot; to trigger this popup</p>
           </div>
         </div>
       </div>
@@ -137,9 +138,11 @@ export default function PopupForm({ section, onInputChange, sectionKey = 'popup'
         <div className="space-y-2">
           {section.image && !section.image.loading && (
             <div className="relative">
-              <img
+              <Image
                 src={getImageSrc(section.image)}
                 alt="Popup preview"
+                width={400}
+                height={128}
                 className="w-full h-32 object-cover rounded-lg border"
               />
               <button
@@ -297,7 +300,7 @@ export default function PopupForm({ section, onInputChange, sectionKey = 'popup'
           
           {(!section.buttons || section.buttons.length === 0) && (
             <div className="text-center py-4 text-gray-500 text-sm">
-              No buttons added yet. Click "Add Button" to create your first button.
+              No buttons added yet. Click &quot;Add Button&quot; to create your first button.
             </div>
           )}
         </div>

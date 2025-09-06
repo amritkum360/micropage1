@@ -25,9 +25,11 @@ export default function HeaderTemplate({ section, businessName, tagline }) {
           {/* Logo and Business Name */}
           <div className="flex items-center space-x-4">
             {logoSrc && (
-              <img 
+              <Image 
                 src={logoSrc} 
                 alt={businessName} 
+                width={48}
+                height={48}
                 className="w-10 h-10 md:w-12 md:h-12 object-contain" 
               />
             )}

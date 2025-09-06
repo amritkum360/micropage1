@@ -26,9 +26,9 @@ Create a modern and beautiful responsive HTML hero/about section using Tailwind 
 The section should include:
 
 - A stylish gradient or background image
-- A bold section title: "${sectionTitle || 'AI About Section'}"
-- A short description: "${description}"
-- A primary button (e.g., "More Info") with hover effects
+- A bold section title: &quot;${sectionTitle || 'AI About Section'}&quot;
+- A short description: &quot;${description}&quot;
+- A primary button (e.g., &quot;More Info&quot;) with hover effects
 - Make it look professional and visually appealing
 - Use flexbox or grid for layout
 - Responsive design for mobile, tablet, and desktop

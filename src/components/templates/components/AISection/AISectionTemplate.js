@@ -36,7 +36,7 @@ export default function AISectionTemplate({ section }) {
             </p>
             <div className="bg-blue-50 p-4 rounded-lg mb-6">
               <p className="text-sm text-blue-600 mb-2">
-                <strong>Example:</strong> "A hero section with gradient background, large title, and CTA button"
+                <strong>Example:</strong> &quot;A hero section with gradient background, large title, and CTA button&quot;
               </p>
               <p className="text-xs text-blue-500">
                 AI will generate HTML with Tailwind CSS classes like: bg-gradient-to-r, text-4xl, px-6, py-3, etc.
@@ -75,7 +75,7 @@ export default function AISectionTemplate({ section }) {
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">AI Generation Error</h3>
             <p className="text-lg text-gray-600 mb-6">
-              There's an error in the AI-generated code. Please try generating again.
+              There&apos;s an error in the AI-generated code. Please try generating again.
             </p>
             <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
               <p className="text-sm text-red-600 font-mono">

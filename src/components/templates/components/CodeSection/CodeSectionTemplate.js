@@ -37,7 +37,7 @@ export default function CodeSectionTemplate({ section }) {
             <div className="bg-gray-100 p-4 rounded-lg">
               <p className="text-sm text-gray-500 font-mono">
                 {/* Show example code */}
-                {`<div class="custom-section">
+                {`<div class=&quot;custom-section&quot;>
   <h2>Your Custom Content</h2>
   <p>Add your HTML here...</p>
 </div>
@@ -80,7 +80,7 @@ export default function CodeSectionTemplate({ section }) {
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Code Error</h3>
             <p className="text-lg text-gray-600 mb-6">
-              There's an error in your custom code. Please check the syntax and try again.
+              There&apos;s an error in your custom code. Please check the syntax and try again.
             </p>
             <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
               <p className="text-sm text-red-600 font-mono">
