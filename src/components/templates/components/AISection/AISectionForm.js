@@ -138,11 +138,11 @@ export default function AISectionForm({ section, onInputChange, sectionKey, isOp
               className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
             />
             <p className="text-xs text-gray-500 mt-2">
-              Describe what kind of section you want. For example: "A hero section with a gradient background, large title, subtitle, and a call-to-action button"
+              Describe what kind of section you want. For example: &quot;A hero section with a gradient background, large title, subtitle, and a call-to-action button&quot;
             </p>
             <div className="mt-3 p-3 bg-blue-50 rounded-lg">
               <p className="text-xs text-blue-600 font-medium mb-1">💡 AI will generate code using Tailwind CSS classes</p>
-              <p className="text-xs text-blue-500">No custom CSS needed - everything uses Tailwind's utility classes!</p>
+              <p className="text-xs text-blue-500">No custom CSS needed - everything uses Tailwind&apos;s utility classes!</p>
             </div>
           </div>
 

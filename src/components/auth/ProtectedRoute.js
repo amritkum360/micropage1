@@ -32,7 +32,7 @@ export default function ProtectedRoute({ children }) {
     } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
       console.log('✅ User onboarding completed - allowing dashboard access');
     }
-  }, [isAuthenticated, loading, user, router]);
+  }, [isAuthenticated, loading, user, router, navigateWithLoader]);
 
   const handleOnboardingComplete = async (updatedUser) => {
     console.log('🎯 Onboarding completed, updated user:', updatedUser);

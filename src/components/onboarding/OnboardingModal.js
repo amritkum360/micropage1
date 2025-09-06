@@ -55,7 +55,7 @@ const OnboardingModal = ({ isOpen, onComplete, user }) => {
     }, 500); // 500ms delay
 
     return () => clearTimeout(timeoutId);
-  }, [formData.subdomain]);
+  }, [formData.subdomain, checkSubdomainAvailability]);
 
   useEffect(() => {
     if (isOpen) {
@@ -248,7 +248,7 @@ const OnboardingModal = ({ isOpen, onComplete, user }) => {
               <Globe className="h-6 w-6 text-white" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-1">Welcome to MicroPage</h2>
-            <p className="text-sm text-gray-600">Let's create your amazing website</p>
+            <p className="text-sm text-gray-600">Let&apos;s create your amazing website</p>
             <div className="mt-4">
               <div className="text-xs text-gray-500 mb-1">Step {currentStep} of 2</div>
               <div className="w-24 bg-gray-200 rounded-full h-1 mx-auto">

@@ -75,7 +75,7 @@ function DashboardContent() {
     }, 1000);
 
     return () => clearTimeout(celebrationTimer);
-  }, []);
+  }, [loadWebsites, loadSubscription]);
 
   // Refresh websites when user data changes (after onboarding)
   useEffect(() => {
@@ -83,7 +83,7 @@ function DashboardContent() {
       console.log('🔄 User onboarding completed, refreshing websites...');
       loadWebsites();
     }
-  }, [user?.onboardingCompleted]);
+  }, [user?.onboardingCompleted, loadWebsites, user]);
 
 
 
@@ -519,10 +519,10 @@ function DashboardContent() {
                      Welcome to MicroPage! 🚀
                    </h3>
                    <p className="text-green-700 mb-2">
-                     Your website <strong>"{user.onboardingData.websiteName}"</strong> has been created successfully!
+                     Your website <strong>&quot;{user.onboardingData.websiteName}&quot;</strong> has been created successfully!
                    </p>
                    <p className="text-sm text-green-600">
-                     You can now edit, customize, and publish your website. Start by clicking the "Edit" button below.
+                     You can now edit, customize, and publish your website. Start by clicking the &quot;Edit&quot; button below.
                    </p>
                  </div>
                </div>

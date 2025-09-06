@@ -38,7 +38,7 @@ export default function TopBar({ onSave, isEditMode = false, formData = {}, onSu
       console.log('TopBar - Syncing subdomain from formData:', currentSubdomain);
       setSubdomain(currentSubdomain);
     }
-  }, [formData?.subdomain, window.currentFormData?.subdomain]);
+  }, [formData?.subdomain, subdomain]);
 
   // Debounced subdomain check
   const checkSubdomainAvailability = useCallback(async (subdomainValue) => {
