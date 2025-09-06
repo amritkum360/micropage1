@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import useNotification from '@/hooks/useNotification';
 
@@ -15,7 +15,7 @@ export default function useSubscription() {
   const [daysUntilExpiry, setDaysUntilExpiry] = useState(0);
   const [creatingSubscription, setCreatingSubscription] = useState(false);
 
-  const loadSubscription = async () => {
+  const loadSubscription = useCallback(async () => {
     try {
       const subscriptionData = await getUserSubscription();
       setSubscription(subscriptionData.subscription);
@@ -39,16 +39,16 @@ export default function useSubscription() {
     } catch (error) {
       console.error('Failed to load subscription:', error);
     }
-  };
+  }, [getUserSubscription, showWarning]);
 
-  const loadSubscriptionPlans = async () => {
+  const loadSubscriptionPlans = useCallback(async () => {
     try {
       const response = await getSubscriptionPlans();
       setSubscriptionPlans(response.plans);
     } catch (error) {
       console.error('Failed to load subscription plans:', error);
     }
-  };
+  }, [getSubscriptionPlans]);
 
   const handleCreateSubscription = async (duration, paymentResult) => {
     try {
@@ -158,7 +158,7 @@ export default function useSubscription() {
   useEffect(() => {
     loadSubscription();
     loadSubscriptionPlans();
-  }, []);
+  }, [loadSubscription, loadSubscriptionPlans]);
 
   return {
     // State

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext();
 
@@ -190,7 +190,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Get user's websites
-  const getWebsites = async () => {
+  const getWebsites = useCallback(async () => {
     if (!token) return [];
 
     try {
@@ -210,7 +210,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Get websites error:', error);
       return [];
     }
-  };
+  }, [token, API_BASE_URL]);
 
   // Get single website
   const getWebsite = async (websiteId) => {
@@ -393,7 +393,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Get subscription plans
-  const getSubscriptionPlans = async () => {
+  const getSubscriptionPlans = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/subscriptions/plans`);
       const data = await response.json();
@@ -407,10 +407,10 @@ export const AuthProvider = ({ children }) => {
       console.error('Get plans error:', error);
       throw error;
     }
-  };
+  }, [API_BASE_URL]);
 
   // Get user subscription
-  const getUserSubscription = async () => {
+  const getUserSubscription = useCallback(async () => {
     if (!token) throw new Error('Not authenticated');
 
     try {
@@ -431,7 +431,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Get subscription error:', error);
       throw error;
     }
-  };
+  }, [token, API_BASE_URL]);
 
   // Create subscription
   const createSubscription = async (duration) => {

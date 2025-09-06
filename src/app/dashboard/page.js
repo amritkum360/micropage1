@@ -87,7 +87,7 @@ function DashboardContent() {
 
 
 
-  const loadWebsites = async () => {
+  const loadWebsites = useCallback(async () => {
     try {
       console.log('🔄 Loading websites for user:', user?.id);
       const userWebsites = await getWebsites();
@@ -100,7 +100,7 @@ function DashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getWebsites, user?.id]);
 
   const handleLogout = () => {
     logout();
