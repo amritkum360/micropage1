@@ -23,8 +23,10 @@ export default function SubdomainPage() {
       // Get the current host to determine subdomain
       const host = window.location.host;
       console.log('🌐 Current host:', host);
+      console.log('🌐 Current URL:', window.location.href);
       
-      if (!host.includes('jirocash.com')) {
+      // For development, also allow localhost with subdomain
+      if (!host.includes('jirocash.com') && !host.includes('localhost')) {
         throw new Error('Invalid subdomain request');
       }
       
@@ -32,7 +34,12 @@ export default function SubdomainPage() {
       console.log('🔍 Detected subdomain:', subdomain);
       
       // Skip if it's the main domain
-      if (subdomain === 'www' || subdomain === 'api' || subdomain === 'localhost' || subdomain === '127' || subdomain === '0') {
+      if (subdomain === 'www' || subdomain === 'api' || subdomain === '127' || subdomain === '0') {
+        throw new Error('Main domain access');
+      }
+      
+      // For localhost, allow subdomain testing
+      if (host.includes('localhost') && subdomain === 'localhost') {
         throw new Error('Main domain access');
       }
       

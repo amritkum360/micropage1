@@ -24,13 +24,24 @@ const nextConfig = {
   // Handle subdomain routing
   async rewrites() {
     return [
-      // Rewrite subdomain requests to the subdomain page
+      // Rewrite subdomain requests to the subdomain page for production
       {
         source: '/:path*',
         has: [
           {
             type: 'host',
             value: '(?<subdomain>.*)\\.jirocash\\.com',
+          },
+        ],
+        destination: '/subdomain',
+      },
+      // Rewrite subdomain requests for localhost development
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: '(?<subdomain>.*)\\.localhost:3000',
           },
         ],
         destination: '/subdomain',
