@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { uploadImageToServer, isImageUploaded, getImageSrc, getImageMetadata } from '@/utils/imageUtils';
 
@@ -187,10 +188,12 @@ export default function GalleryForm({ section, onInputChange, sectionKey = 'gall
                   <div className="mt-2">
                     <label className="block text-xs text-gray-600 mb-1">Image Preview:</label>
                     <div className="w-20 h-16 border border-gray-200 rounded overflow-hidden bg-white">
-                      <img
+                      <Image
                         src={getImageSrc(image.image)}
                         alt={`Gallery image ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        sizes="80px"
                         onError={(e) => {
                           e.target.style.display = 'none';
                           e.target.nextSibling.style.display = 'flex';

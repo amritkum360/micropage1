@@ -186,7 +186,7 @@ export default function CustomSectionForm3({ section, onInputChange, sectionKey,
         {/* Fallback for single button (backward compatibility) */}
         {(!section.buttons || section.buttons.length === 0) && (
           <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-            <p className="text-xs text-yellow-700 mb-2">No buttons added yet. Click "Add Button" above to create your first button.</p>
+            <p className="text-xs text-yellow-700 mb-2">No buttons added yet. Click &quot;Add Button&quot; above to create your first button.</p>
           </div>
         )}
       </div>

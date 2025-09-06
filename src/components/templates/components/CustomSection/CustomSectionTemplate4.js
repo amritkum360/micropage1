@@ -83,7 +83,7 @@ export default function CustomSectionTemplate4({ section }) {
           <div key={index} className="mb-8">
             <blockquote className="border-l-4 border-current theme-primary pl-6 py-4 theme-primary-bg-light rounded-r-lg">
               <p className="text-lg text-gray-700 italic mb-2">
-                "{block.text}"
+                &ldquo;{block.text}&rdquo;
               </p>
               {block.author && (
                 <cite className="text-sm text-gray-600 font-medium">
