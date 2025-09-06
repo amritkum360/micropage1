@@ -12,7 +12,14 @@ export async function POST(request) {
     }
 
     // ChatGPT API configuration
-    const apiKey = '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';
+    const apiKey = process.env.OPENAI_API_KEY;
+    
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, error: 'OpenAI API key not configured' },
+        { status: 500 }
+      );
+    }
     
     const prompt = `
 Create a modern and beautiful responsive HTML hero/about section using Tailwind CSS only. 
