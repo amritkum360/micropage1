@@ -5,6 +5,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Image from "next/image";
+import Link from 'next/link';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -516,9 +517,9 @@ export default function LandingPage() {
               Try our AI-powered website builder without any commitment. See how easy it is to create your perfect &quot;About Me&quot; page.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/signup" className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-8 py-4 rounded-xl text-xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              <Link href="/signup" className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-8 py-4 rounded-xl text-xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                 Start Building Free
-              </a>
+              </Link>
               <a href="#demo" className="border-2 border-purple-500 text-purple-600 px-8 py-4 rounded-xl text-xl font-semibold hover:bg-purple-500 hover:text-white transition-all duration-200">
                 Preview My Page
               </a>

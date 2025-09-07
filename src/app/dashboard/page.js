@@ -480,7 +480,7 @@ function DashboardContent() {
                    
                    {/* Billing History Link */}
                    <div className="mt-3">
-                     <a
+                     <Link
                        href="/dashboard/billing"
                        className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-700 font-medium hover:scale-105 transition-all duration-300 bg-white/70 hover:bg-white px-3 py-2 rounded-lg shadow-md hover:shadow-lg"
                      >
@@ -488,7 +488,7 @@ function DashboardContent() {
                        <CreditCard className="h-4 w-4 mr-1" />
                        <span className="font-body">View Billing History</span>
                        <span className="ml-1 animate-pulse">📊</span>
-                     </a>
+                     </Link>
                    </div>
                  </div>
                </div>

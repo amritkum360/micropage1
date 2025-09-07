@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import UniversalTemplate from '@/components/templates/UniversalTemplate';
 import Link from 'next/link';
@@ -19,9 +19,9 @@ export default function SubdomainPage() {
     if (subdomain) {
       loadSubdomainWebsite();
     }
-  }, [subdomain]);
+  }, [subdomain, loadSubdomainWebsite]);
 
-  const loadSubdomainWebsite = async () => {
+  const loadSubdomainWebsite = useCallback(async () => {
     try {
       console.log('🌐 Loading subdomain website for:', subdomain);
       
@@ -48,7 +48,7 @@ export default function SubdomainPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [subdomain, API_BASE_URL]);
 
   if (loading) {
     return (
