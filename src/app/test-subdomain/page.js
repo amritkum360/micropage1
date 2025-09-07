@@ -37,7 +37,7 @@ function TestContent() {
           textAlign: "center"
         }}>
           <h1 style={{ fontSize: "3rem", margin: "0" }}>{name}</h1>
-          <p>Welcome to {name}'s subdomain!</p>
+          <p>Welcome to {name}s subdomain!</p>
         </div>
       ) : (
         <div style={{
@@ -48,7 +48,7 @@ function TestContent() {
           textAlign: "center"
         }}>
           <h2>❌ No subdomain detected</h2>
-          <p>Make sure you're accessing via a subdomain like:</p>
+          <p>Make sure you are accessing via a subdomain like:</p>
           <ul style={{ textAlign: "left", display: "inline-block" }}>
             <li>amrit.localhost:3000</li>
             <li>rahul.localhost:3000</li>
