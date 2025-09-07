@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function DebugSubdomainPage() {
   const [debugInfo, setDebugInfo] = useState({});
@@ -76,21 +77,21 @@ export default function DebugSubdomainPage() {
             </button>
             
             <div>
-              <a
+              <Link
                 href="/subdomain/dramrit"
                 className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md inline-block"
               >
                 Direct Subdomain Page
-              </a>
+              </Link>
             </div>
             
             <div>
-              <a
+              <Link
                 href="/"
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md inline-block"
               >
                 Main Site
-              </a>
+              </Link>
             </div>
           </div>
         </div>
