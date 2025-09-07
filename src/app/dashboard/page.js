@@ -79,27 +79,30 @@ function DashboardContent() {
     } finally {
       setLoading(false);
     }
-  }, [getWebsites, user?.id]);
+  }, [getWebsites]);
 
   useEffect(() => {
-    loadWebsites();
-    loadSubscription();
-    
-    // Trigger celebration animation after a short delay
-    const celebrationTimer = setTimeout(() => {
-      setShowCelebration(true);
-    }, 1000);
+    if (user && user.id) {
+      console.log('🔄 Dashboard mounted, loading data for user:', user.id);
+      loadWebsites();
+      loadSubscription();
+      
+      // Trigger celebration animation after a short delay
+      const celebrationTimer = setTimeout(() => {
+        setShowCelebration(true);
+      }, 1000);
 
-    return () => clearTimeout(celebrationTimer);
-  }, [loadWebsites, loadSubscription]);
+      return () => clearTimeout(celebrationTimer);
+    }
+  }, [user?.id, loadWebsites, loadSubscription]);
 
-  // Refresh websites when user data changes (after onboarding)
+  // Refresh websites when user onboarding status changes
   useEffect(() => {
-    if (user && user.onboardingCompleted) {
+    if (user && user.onboardingCompleted && user.id) {
       console.log('🔄 User onboarding completed, refreshing websites...');
       loadWebsites();
     }
-  }, [user?.onboardingCompleted, loadWebsites, user]);
+  }, [user?.onboardingCompleted, loadWebsites]);
 
   const handleLogout = () => {
     logout();

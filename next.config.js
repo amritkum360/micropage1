@@ -21,15 +21,16 @@ const nextConfig = {
       },
     ],
   },
-  // Enable wildcard domains for subdomain routing
-  experimental: {
-    // This allows Next.js to handle wildcard subdomains
-    serverComponentsExternalPackages: [],
-  },
-  // Handle subdomain routing - middleware will handle this now
+  // External packages for server components
+  serverExternalPackages: ['mongoose'],
+  // Handle subdomain routing - removed as we're using middleware now
   async rewrites() {
     return [
-      // Keep existing rewrites if any
+      // Fallback for published websites
+      {
+        source: '/published/:id',
+        destination: '/published/:id',
+      },
     ];
   },
   // Other Next.js configurations...

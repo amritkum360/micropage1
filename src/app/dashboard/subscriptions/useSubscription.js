@@ -39,7 +39,7 @@ export default function useSubscription() {
     } catch (error) {
       console.error('Failed to load subscription:', error);
     }
-  }, [getUserSubscription, showWarning]);
+  }, [getUserSubscription]);
 
   const loadSubscriptionPlans = useCallback(async () => {
     try {
@@ -158,7 +158,7 @@ export default function useSubscription() {
   useEffect(() => {
     loadSubscription();
     loadSubscriptionPlans();
-  }, [loadSubscription, loadSubscriptionPlans]);
+  }, []); // Only run once on mount
 
   return {
     // State

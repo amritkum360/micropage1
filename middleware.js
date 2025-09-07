@@ -1,27 +1,16 @@
 import { NextResponse } from "next/server";
 
-// Simple middleware - let backend handle everything
 export function middleware(req) {
+  console.log('🚀 MIDDLEWARE TRIGGERED!');
+  console.log('🌐 Host:', req.headers.get("host"));
+  console.log('🌐 Path:', req.nextUrl.pathname);
+  
+  // Simple test - just rewrite everything to subdomain page
   const url = req.nextUrl.clone();
-  const host = req.headers.get("host") || "";
-
-  console.log("🔍 Middleware - Host:", host, "Path:", url.pathname);
-
-  // Check if this looks like a subdomain request
-  const isSubdomainRequest = (
-    (host.includes("localhost") && host.split(".")[0] !== "localhost") ||
-    (host.includes("jirocash.com") && !host.startsWith("www.") && !host.startsWith("jirocash."))
-  );
-
-  if (isSubdomainRequest) {
-    console.log("🚀 Subdomain detected, redirecting to backend handler");
-    // Redirect to backend API that will handle the redirect
-    url.pathname = '/api/subdomain-redirect';
-    url.searchParams.set('host', host);
-    return NextResponse.rewrite(url);
-  }
-
-  return NextResponse.next();
+  url.pathname = '/subdomain/dramrit';
+  console.log('🌐 Rewriting to:', url.pathname);
+  
+  return NextResponse.rewrite(url);
 }
 
 export const config = {

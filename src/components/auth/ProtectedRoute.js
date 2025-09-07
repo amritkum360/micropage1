@@ -12,11 +12,19 @@ export default function ProtectedRoute({ children }) {
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkingWebsites, setCheckingWebsites] = useState(false);
+  const [hasCheckedWebsites, setHasCheckedWebsites] = useState(false);
+
+  // Check if we're on a subdomain or published page (these don't need authentication)
+  const isSubdomainPage = typeof window !== 'undefined' && (
+    window.location.pathname.startsWith('/subdomain/') ||
+    window.location.pathname.startsWith('/published/')
+  );
 
   const checkExistingWebsites = useCallback(async () => {
-    if (checkingWebsites) return;
+    if (checkingWebsites || hasCheckedWebsites) return;
     
     setCheckingWebsites(true);
+    setHasCheckedWebsites(true);
     try {
       console.log('🔍 Checking if user already has websites...');
       const websites = await getWebsites();
@@ -43,12 +51,21 @@ export default function ProtectedRoute({ children }) {
     } finally {
       setCheckingWebsites(false);
     }
-  }, [checkingWebsites, getWebsites, fixOnboardingStatus]);
+  }, [getWebsites, fixOnboardingStatus, checkingWebsites, hasCheckedWebsites]);
+
+  // Reset check flag when user changes
+  useEffect(() => {
+    if (user?.id) {
+      setHasCheckedWebsites(false);
+      setShowOnboarding(false);
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     console.log('🔍 ProtectedRoute - Auth state:', { 
       loading, 
       isAuthenticated, 
+      isSubdomainPage,
       user: user ? { 
         id: user.id, 
         onboardingCompleted: user.onboardingCompleted,
@@ -56,24 +73,38 @@ export default function ProtectedRoute({ children }) {
       } : null 
     });
 
+    // Skip authentication for subdomain and published pages
+    if (isSubdomainPage) {
+      console.log('🌐 ProtectedRoute - Subdomain page, skipping authentication');
+      return;
+    }
+
     if (!loading && !isAuthenticated) {
       console.log('🚪 Redirecting to auth - user not authenticated');
       navigateWithLoader(router, '/auth');
-    } else if (!loading && isAuthenticated && user && !user.onboardingCompleted) {
+    } else if (!loading && isAuthenticated && user && !user.onboardingCompleted && !hasCheckedWebsites) {
       // Check if user already has websites before showing onboarding
+      // Only check if we haven't checked yet
       checkExistingWebsites();
     } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
       console.log('✅ User onboarding completed - allowing dashboard access');
+      setShowOnboarding(false); // Make sure onboarding is closed
     } else if (loading) {
       console.log('⏳ ProtectedRoute - Still loading authentication...');
     }
-  }, [isAuthenticated, loading, user, router, navigateWithLoader, checkExistingWebsites]);
+  }, [isAuthenticated, loading, user, router, navigateWithLoader, checkExistingWebsites, hasCheckedWebsites, isSubdomainPage]);
 
   const handleOnboardingComplete = async (updatedUser) => {
     console.log('🎯 Onboarding completed, updated user:', updatedUser);
     
     // Close onboarding modal first
     setShowOnboarding(false);
+    
+    // Update the user state immediately to prevent re-triggering onboarding
+    if (updatedUser) {
+      console.log('🔄 Updating user state with completed onboarding...');
+      // The user state will be updated by the AuthContext after completeOnboarding
+    }
     
     // Refresh user data to get the latest onboarding status and website data
     try {
@@ -92,6 +123,12 @@ export default function ProtectedRoute({ children }) {
       navigateWithLoader(router, '/dashboard');
     }, 1000);
   };
+
+  // Skip authentication for subdomain and published pages
+  if (isSubdomainPage) {
+    console.log('🌐 ProtectedRoute - Rendering subdomain page without authentication');
+    return <>{children}</>;
+  }
 
   if (loading || checkingWebsites) {
     return (

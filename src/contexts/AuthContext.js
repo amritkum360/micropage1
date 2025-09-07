@@ -750,6 +750,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Check subdomain availability
+  const checkSubdomain = async (subdomain) => {
+    if (!token) throw new Error('Not authenticated');
+
+    try {
+      console.log('🔍 Frontend: Checking subdomain:', subdomain);
+      console.log('🔍 Frontend: API URL:', `${API_BASE_URL}/domains/check-subdomain/${subdomain}`);
+      console.log('🔍 Frontend: Token:', token ? 'Present' : 'Missing');
+      
+      const response = await fetch(`${API_BASE_URL}/domains/check-subdomain/${subdomain}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      console.log('🔍 Frontend: Response status:', response.status);
+      const data = await response.json();
+      console.log('🔍 Frontend: Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to check subdomain');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('❌ Frontend: Check subdomain error:', error);
+      throw error;
+    }
+  };
+
   const isAuthenticated = !!token;
   
   // Debug logging for authentication state
@@ -791,6 +821,7 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     completeOnboarding,
     fixOnboardingStatus,
+    checkSubdomain,
     isAuthenticated,
   };
 

@@ -38,10 +38,11 @@ const OnboardingModal = ({ isOpen, onComplete, user }) => {
         message: result.message
       });
     } catch (error) {
+      console.error('Subdomain check error:', error);
       setSubdomainStatus({
         checking: false,
         available: false,
-        message: 'Error checking subdomain'
+        message: error.message || 'Error checking subdomain'
       });
     }
   }, [checkSubdomain]);
