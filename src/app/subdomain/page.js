@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import UniversalTemplate from '@/components/templates/UniversalTemplate';
 import Link from 'next/link';
@@ -14,11 +14,7 @@ export default function SubdomainPage() {
   // API base URL
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-  useEffect(() => {
-    loadSubdomainWebsite();
-  }, []);
-
-  const loadSubdomainWebsite = async () => {
+  const loadSubdomainWebsite = useCallback(async () => {
     try {
       console.log('🌐 Loading subdomain website...');
       
@@ -54,7 +50,11 @@ export default function SubdomainPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams, API_BASE_URL]);
+
+  useEffect(() => {
+    loadSubdomainWebsite();
+  }, [loadSubdomainWebsite]);
 
   if (loading) {
     return (

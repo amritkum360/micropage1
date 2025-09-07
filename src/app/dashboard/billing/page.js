@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { 
@@ -23,11 +23,7 @@ function BillingHistoryContent() {
   const [filter, setFilter] = useState('all'); // all, successful, pending, failed
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadBillingHistory();
-  }, []);
-
-  const loadBillingHistory = async () => {
+  const loadBillingHistory = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -86,7 +82,11 @@ function BillingHistoryContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadBillingHistory();
+  }, [loadBillingHistory]);
 
   // Real billing data loading - no mock data
 

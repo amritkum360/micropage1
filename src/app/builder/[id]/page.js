@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigation } from '@/contexts/NavigationContext';
 import { useRouter } from 'next/navigation';
@@ -23,14 +23,7 @@ export default function EditBuilderPage({ params }) {
   const unwrappedParams = use(params);
   const websiteId = unwrappedParams.id;
 
-  useEffect(() => {
-    // Only load website when authentication is ready
-    if (!authLoading) {
-      loadWebsite();
-    }
-  }, [websiteId, authLoading]);
-
-  const loadWebsite = async () => {
+  const loadWebsite = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -58,7 +51,14 @@ export default function EditBuilderPage({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [websiteId, token, getWebsite, navigateWithLoader, router]);
+
+  useEffect(() => {
+    // Only load website when authentication is ready
+    if (!authLoading) {
+      loadWebsite();
+    }
+  }, [websiteId, authLoading, loadWebsite]);
 
   const handleTemplateSave = async (data) => {
     console.log('Template data received for update:', data);

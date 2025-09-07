@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import UniversalTemplate from '@/components/templates/UniversalTemplate';
 import { use } from 'react';
@@ -16,11 +16,7 @@ export default function PublishedWebsitePage({ params }) {
   const unwrappedParams = use(params);
   const websiteId = unwrappedParams.id;
 
-  useEffect(() => {
-    loadPublishedWebsite();
-  }, [websiteId]);
-
-  const loadPublishedWebsite = async () => {
+  const loadPublishedWebsite = useCallback(async () => {
     try {
       const websiteData = await getPublishedWebsite(websiteId);
       console.log('Loaded website data:', websiteData);
@@ -32,7 +28,11 @@ export default function PublishedWebsitePage({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [websiteId, getPublishedWebsite]);
+
+  useEffect(() => {
+    loadPublishedWebsite();
+  }, [loadPublishedWebsite]);
 
   if (loading) {
     return (

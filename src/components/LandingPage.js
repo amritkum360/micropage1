@@ -62,14 +62,14 @@ export default function LandingPage() {
             {/* Hero Content */}
             <div>
               <div className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium mb-8 border border-purple-200">
-                🚀 India's Simplest AI Website Builder
+                🚀 India&apos;s Simplest AI Website Builder
               </div>
               <h1 className="text-6xl md:text-7xl font-bold mb-8 leading-tight tracking-tight">
                 Your story. Your website.
                 <span className="block text-red-600">In minutes. Made simple.</span>
               </h1>
               <p className="text-2xl text-gray-600 max-w-2xl mb-10 leading-relaxed text-center mx-auto">
-                If you're a Doc/CA/Influencer/Student/Store owner or anyone, we believe you need one page - all about you. 
+                If you&apos;re a Doc/CA/Influencer/Student/Store owner or anyone, we believe you need one page - all about you. 
                 Own your aboutwebsite.in or connect your domain.
               </p>
               
@@ -115,7 +115,7 @@ export default function LandingPage() {
               Our Promise
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              We've removed all the complexity from website building
+              We&apos;ve removed all the complexity from website building
             </p>
           </div>
 
@@ -163,7 +163,7 @@ export default function LandingPage() {
 
           <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-lg">
             <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold mb-4">Just Enter Details - AI Makes Your "About Me" Site</h3>
+              <h3 className="text-3xl font-bold mb-4">Just Enter Details - AI Makes Your &quot;About Me&quot; Site</h3>
               <p className="text-xl text-gray-600">Tell us about yourself, and our AI creates your perfect website</p>
             </div>
 
@@ -214,10 +214,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold mb-6 tracking-tight">
-              What "Easy and Simple" Means
+              What &quot;Easy and Simple&quot; Means
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              We've eliminated all the technical headaches so you can focus on what matters - your story
+              We&apos;ve eliminated all the technical headaches so you can focus on what matters - your story
             </p>
           </div>
 
@@ -286,22 +286,22 @@ export default function LandingPage() {
               <div className="space-y-6">
                 <div className="bg-white p-6 rounded-xl border border-gray-200">
                   <h4 className="text-xl font-bold mb-3 text-purple-600">One Page = All You Need</h4>
-                  <p className="text-gray-600">"A clean personal page instead of a messy blog or LinkedIn clutter."</p>
+                  <p className="text-gray-600">&quot;A clean personal page instead of a messy blog or LinkedIn clutter.&quot;</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl border border-gray-200">
                   <h4 className="text-xl font-bold mb-3 text-blue-600">Works in Hinglish, Hindi & English</h4>
-                  <p className="text-gray-600">"Your website, your language."</p>
+                  <p className="text-gray-600">&quot;Your website, your language.&quot;</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl border border-gray-200">
                   <h4 className="text-xl font-bold mb-3 text-green-600">Mobile First</h4>
-                  <p className="text-gray-600">"Your About page looks perfect on every phone."</p>
+                  <p className="text-gray-600">&quot;Your About page looks perfect on every phone.&quot;</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl border border-gray-200">
                   <h4 className="text-xl font-bold mb-3 text-orange-600">Instant Shareable Link</h4>
-                  <p className="text-gray-600">"Perfect for resumes, Instagram bio, WhatsApp, or business card."</p>
+                  <p className="text-gray-600">&quot;Perfect for resumes, Instagram bio, WhatsApp, or business card.&quot;</p>
                 </div>
               </div>
             </div>
@@ -340,7 +340,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-blue-600">Students</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                "Get internships faster. Share your projects and resume with one simple link."
+                &quot;Get internships faster. Share your projects and resume with one simple link.&quot;
               </p>
             </div>
 
@@ -353,7 +353,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-green-600">Doctors</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                "Build trust online. Share your credentials, specializations, and clinic details."
+                &quot;Build trust online. Share your credentials, specializations, and clinic details.&quot;
               </p>
             </div>
 
@@ -366,7 +366,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-purple-600">Influencers</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                "Look professional. Share your collabs, stats, and media kit in one link."
+                &quot;Look professional. Share your collabs, stats, and media kit in one link.&quot;
               </p>
             </div>
 
@@ -379,7 +379,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-orange-600">Professionals</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                "Showcase your portfolio and services. Impress clients in seconds."
+                &quot;Showcase your portfolio and services. Impress clients in seconds.&quot;
               </p>
             </div>
 
@@ -392,7 +392,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-red-600">Businesses</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                "Display products and services. Convert your leads directly."
+                &quot;Display products and services. Convert your leads directly.&quot;
               </p>
             </div>
 
@@ -405,7 +405,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-indigo-600">CAs</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                "Build credibility. Share your expertise, services, and client testimonials professionally."
+                &quot;Build credibility. Share your expertise, services, and client testimonials professionally.&quot;
               </p>
             </div>
           </div>
@@ -428,7 +428,7 @@ export default function LandingPage() {
               How It Works
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Three simple steps to create your perfect "About Me" website
+              Three simple steps to create your perfect &quot;About Me&quot; website
             </p>
           </div>
 
@@ -451,7 +451,7 @@ export default function LandingPage() {
               </p>
               <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
                 <p className="text-sm text-purple-700 font-medium">
-                  "I'm a doctor from Mumbai, specializing in cardiology with 10 years of experience..."
+                  &quot;I&apos;m a doctor from Mumbai, specializing in cardiology with 10 years of experience...&quot;
                 </p>
               </div>
             </div>
@@ -497,7 +497,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4 text-green-600">Preview My Page</h3>
               <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                See your website come to life instantly. Make adjustments, add sections, and customize until it's perfect for you.
+                See your website come to life instantly. Make adjustments, add sections, and customize until it&apos;s perfect for you.
               </p>
               <div className="bg-green-50 p-4 rounded-xl border border-green-200">
                 <div className="h-16 bg-gradient-to-r from-green-200 to-green-300 rounded mb-2"></div>
@@ -513,7 +513,7 @@ export default function LandingPage() {
               Ready to See It in Action?
             </h3>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Try our AI-powered website builder without any commitment. See how easy it is to create your perfect "About Me" page.
+              Try our AI-powered website builder without any commitment. See how easy it is to create your perfect &quot;About Me&quot; page.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/signup" className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-8 py-4 rounded-xl text-xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
@@ -535,7 +535,7 @@ export default function LandingPage() {
               🛠️ Dashboard Control
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Your website doesn't end when it goes live - that's when the real value begins
+              Your website doesn&apos;t end when it goes live - that&apos;s when the real value begins
             </p>
           </div>
 

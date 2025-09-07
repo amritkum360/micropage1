@@ -72,7 +72,7 @@ function ProfileContent() {
       });
     }
     loadSubscription();
-  }, [user]);
+  }, [user, loadSubscription]);
 
   const handleBackToDashboard = () => {
     navigateWithLoader(router, '/dashboard');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigation } from '@/contexts/NavigationContext';
 import { useRouter } from 'next/navigation';
@@ -13,31 +13,7 @@ export default function ProtectedRoute({ children }) {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkingWebsites, setCheckingWebsites] = useState(false);
 
-  useEffect(() => {
-    console.log('🔍 ProtectedRoute - Auth state:', { 
-      loading, 
-      isAuthenticated, 
-      user: user ? { 
-        id: user.id, 
-        onboardingCompleted: user.onboardingCompleted,
-        onboardingData: user.onboardingData 
-      } : null 
-    });
-
-    if (!loading && !isAuthenticated) {
-      console.log('🚪 Redirecting to auth - user not authenticated');
-      navigateWithLoader(router, '/auth');
-    } else if (!loading && isAuthenticated && user && !user.onboardingCompleted) {
-      // Check if user already has websites before showing onboarding
-      checkExistingWebsites();
-    } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
-      console.log('✅ User onboarding completed - allowing dashboard access');
-    } else if (loading) {
-      console.log('⏳ ProtectedRoute - Still loading authentication...');
-    }
-  }, [isAuthenticated, loading, user, router, navigateWithLoader]);
-
-  const checkExistingWebsites = async () => {
+  const checkExistingWebsites = useCallback(async () => {
     if (checkingWebsites) return;
     
     setCheckingWebsites(true);
@@ -67,7 +43,31 @@ export default function ProtectedRoute({ children }) {
     } finally {
       setCheckingWebsites(false);
     }
-  };
+  }, [checkingWebsites, getWebsites, fixOnboardingStatus]);
+
+  useEffect(() => {
+    console.log('🔍 ProtectedRoute - Auth state:', { 
+      loading, 
+      isAuthenticated, 
+      user: user ? { 
+        id: user.id, 
+        onboardingCompleted: user.onboardingCompleted,
+        onboardingData: user.onboardingData 
+      } : null 
+    });
+
+    if (!loading && !isAuthenticated) {
+      console.log('🚪 Redirecting to auth - user not authenticated');
+      navigateWithLoader(router, '/auth');
+    } else if (!loading && isAuthenticated && user && !user.onboardingCompleted) {
+      // Check if user already has websites before showing onboarding
+      checkExistingWebsites();
+    } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
+      console.log('✅ User onboarding completed - allowing dashboard access');
+    } else if (loading) {
+      console.log('⏳ ProtectedRoute - Still loading authentication...');
+    }
+  }, [isAuthenticated, loading, user, router, navigateWithLoader, checkExistingWebsites]);
 
   const handleOnboardingComplete = async (updatedUser) => {
     console.log('🎯 Onboarding completed, updated user:', updatedUser);

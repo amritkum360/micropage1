@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { X, Check, Globe, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
 import useNotification from '@/hooks/useNotification';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,7 +22,7 @@ const OnboardingModal = ({ isOpen, onComplete, user }) => {
   const { completeOnboarding, token, checkSubdomain } = useAuth();
 
   // Debounced subdomain checking
-  const checkSubdomainAvailability = async (subdomain) => {
+  const checkSubdomainAvailability = useCallback(async (subdomain) => {
     if (!subdomain || subdomain.length < 3) {
       setSubdomainStatus({ checking: false, available: null, message: '' });
       return;
@@ -44,7 +44,7 @@ const OnboardingModal = ({ isOpen, onComplete, user }) => {
         message: 'Error checking subdomain'
       });
     }
-  };
+  }, [checkSubdomain]);
 
   // Debounce subdomain checking
   useEffect(() => {
