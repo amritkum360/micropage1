@@ -79,7 +79,7 @@ function DashboardContent() {
     } finally {
       setLoading(false);
     }
-  }, [getWebsites]);
+  }, [getWebsites, user?.id]);
 
   useEffect(() => {
     if (user && user.id) {
@@ -94,7 +94,7 @@ function DashboardContent() {
 
       return () => clearTimeout(celebrationTimer);
     }
-  }, [user?.id, loadWebsites, loadSubscription]);
+  }, [user, loadWebsites, loadSubscription]);
 
   // Refresh websites when user onboarding status changes
   useEffect(() => {
@@ -102,7 +102,7 @@ function DashboardContent() {
       console.log('🔄 User onboarding completed, refreshing websites...');
       loadWebsites();
     }
-  }, [user?.onboardingCompleted, loadWebsites]);
+  }, [user, loadWebsites]);
 
   const handleLogout = () => {
     logout();

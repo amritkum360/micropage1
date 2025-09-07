@@ -102,7 +102,7 @@ export default function TestSubdomainPage() {
                   >
                     /published/68bd6a711bb60d77afad7c97 →
                   </Link>
-                  <p className="text-gray-600 text-xs">Direct access to Dr. Amrit's website</p>
+                  <p className="text-gray-600 text-xs">Direct access to Dr. Amrits website</p>
                 </div>
               </div>
             </div>
