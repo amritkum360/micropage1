@@ -7,6 +7,7 @@ export function middleware(req) {
   console.log('🚀 MIDDLEWARE TRIGGERED!');
   console.log('🌐 Host:', host);
   console.log('🌐 Path:', req.nextUrl.pathname);
+  console.log('🌐 User-Agent:', req.headers.get('user-agent')?.substring(0, 50));
 
   // Parse host to extract subdomain
   const parts = host.split(".");
@@ -20,6 +21,7 @@ export function middleware(req) {
   console.log('🌐 Parts length:', parts.length);
   console.log('🌐 Subdomain:', subdomain);
   console.log('🌐 Is localhost:', isLocalhost);
+  console.log('🌐 Is production:', isProduction);
 
   // Skip middleware for API routes, static files, and admin routes
   if (
