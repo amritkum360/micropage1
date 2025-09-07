@@ -1,43 +1,26 @@
 import { NextResponse } from "next/server";
 
-// Simplified middleware - let client-side handle subdomain logic
+// Simple middleware - let backend handle everything
 export function middleware(req) {
   const url = req.nextUrl.clone();
   const host = req.headers.get("host") || "";
 
-  // Debug logging
-  console.log("🔍 Middleware triggered for host:", host);
-  console.log("🔍 URL path:", url.pathname);
+  console.log("🔍 Middleware - Host:", host, "Path:", url.pathname);
 
-  // For localhost development - redirect subdomains to catch-all page
-  if (host.includes("localhost")) {
-    const parts = host.split(".");
-    
-    if (parts.length >= 2 && parts[0] !== "localhost") {
-      let subdomain = parts[0];
-      console.log("🚀 Localhost subdomain detected:", subdomain);
-      
-      // Redirect to catch-all page that will handle the subdomain logic
-      url.pathname = `/${subdomain}`;
-      return NextResponse.rewrite(url);
-    }
+  // Check if this looks like a subdomain request
+  const isSubdomainRequest = (
+    (host.includes("localhost") && host.split(".")[0] !== "localhost") ||
+    (host.includes("jirocash.com") && !host.startsWith("www.") && !host.startsWith("jirocash."))
+  );
+
+  if (isSubdomainRequest) {
+    console.log("🚀 Subdomain detected, redirecting to backend handler");
+    // Redirect to backend API that will handle the redirect
+    url.pathname = '/api/subdomain-redirect';
+    url.searchParams.set('host', host);
+    return NextResponse.rewrite(url);
   }
 
-  // For production subdomains
-  if (host.includes("jirocash.com")) {
-    const parts = host.split(".");
-    
-    if (parts.length >= 3 && parts[0] !== "www" && parts[0] !== "jirocash") {
-      let subdomain = parts[0];
-      console.log("🌐 Production subdomain detected:", subdomain);
-      
-      // Redirect to catch-all page that will handle the subdomain logic
-      url.pathname = `/${subdomain}`;
-      return NextResponse.rewrite(url);
-    }
-  }
-
-  console.log("➡️ No subdomain detected, continuing normally");
   return NextResponse.next();
 }
 
