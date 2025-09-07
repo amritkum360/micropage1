@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vercel Approach Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .test-link { display: inline-block; background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 5px; }
+        .test-link:hover { background: #0056b3; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Vercel Approach Test</h1>
+    
+    <div class="test-section">
+        <h2>📋 New Implementation</h2>
+        <p>Using Vercel's official multi-tenant approach with dynamic routing:</p>
+        <ul>
+            <li>✅ Dynamic route: <code>[subdomain]/page.js</code></li>
+            <li>✅ Middleware rewrite to <code>/{subdomain}</code></li>
+            <li>✅ Utility functions for subdomain handling</li>
+            <li>✅ Clean separation of concerns</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Test Links</h2>
+        <p>Test the new implementation:</p>
+        
+        <a href="http://localhost:3000" class="test-link">🏠 Main Site</a>
+        <a href="http://amritkumars.localhost:3000" class="test-link">🌐 Subdomain (amritkumars.localhost:3000)</a>
+        <a href="http://localhost:3000/debug" class="test-link">🐛 Debug Page</a>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Expected Behavior</h2>
+        <div class="status info">
+            <strong>When you visit amritkumars.localhost:3000:</strong><br>
+            1. Middleware detects subdomain "amritkumars"<br>
+            2. Rewrites to /amritkumars route<br>
+            3. Dynamic page loads and fetches website data<br>
+            4. Displays Amrit Kumar's personal website<br>
+            5. URL stays as amritkumars.localhost:3000
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Troubleshooting</h2>
+        <div class="status info">
+            <strong>If it doesn't work:</strong><br>
+            1. Make sure hosts file has: <code>127.0.0.1 amritkumars.localhost</code><br>
+            2. Check browser console for errors<br>
+            3. Verify backend is running on port 5000<br>
+            4. Verify frontend is running on port 3000<br>
+            5. Try incognito mode
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 Key Differences from Previous Approach</h2>
+        <ul>
+            <li><strong>Dynamic Routing:</strong> Uses <code>[subdomain]</code> instead of query params</li>
+            <li><strong>Cleaner URLs:</strong> No query parameters in the URL</li>
+            <li><strong>Better SEO:</strong> Each subdomain has its own route</li>
+            <li><strong>Server-side:</strong> Can be extended for server-side rendering</li>
+        </ul>
+    </div>
+
+    <script>
+        // Auto-test functionality
+        function testSubdomain() {
+            const hostname = window.location.hostname;
+            const subdomain = hostname.split('.')[0];
+            
+            if (subdomain !== 'localhost') {
+                document.body.innerHTML += `
+                    <div class="test-section">
+                        <h2>🎉 You're on a subdomain!</h2>
+                        <div class="status success">
+                            <strong>Current subdomain:</strong> ${subdomain}<br>
+                            <strong>Full URL:</strong> ${window.location.href}<br>
+                            <strong>Status:</strong> Vercel approach is working! 🚀
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        testSubdomain();
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Subdomain Test</title>
+</head>
+<body>
+    <h1>🧪 Simple Subdomain Test</h1>
+    
+    <h2>Test Links:</h2>
+    <ul>
+        <li><a href="http://localhost:3000" target="_blank">Main Site (localhost:3000)</a></li>
+        <li><a href="http://amritkumars.localhost:3000" target="_blank">Subdomain (amritkumars.localhost:3000)</a></li>
+    </ul>
+    
+    <h2>Manual Test:</h2>
+    <p>Copy and paste this URL in your browser:</p>
+    <input type="text" value="http://amritkumars.localhost:3000" style="width: 300px;" readonly>
+    <button onclick="copyToClipboard()">Copy</button>
+    
+    <h2>Expected Result:</h2>
+    <p>When you visit <code>amritkumars.localhost:3000</code>, you should see Amrit Kumar's personal website instead of the main landing page.</p>
+    
+    <h2>If it doesn't work:</h2>
+    <ol>
+        <li>Make sure hosts file is edited (run setup_hosts.bat as administrator)</li>
+        <li>Check browser console for errors</li>
+        <li>Try incognito mode</li>
+    </ol>
+    
+    <script>
+        function copyToClipboard() {
+            const input = document.querySelector('input');
+            input.select();
+            document.execCommand('copy');
+            alert('URL copied to clipboard!');
+        }
+    </script>
+</body>
+</html>

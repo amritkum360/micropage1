@@ -1,33 +1,29 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import UniversalTemplate from '@/components/templates/UniversalTemplate';
 import Link from 'next/link';
 
-function SubdomainContent() {
+export default function SubdomainPage() {
+  const params = useParams();
+  const subdomain = params.subdomain;
   const [website, setWebsite] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const searchParams = useSearchParams();
 
   // API base URL
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-  const loadSubdomainWebsite = useCallback(async () => {
+  useEffect(() => {
+    if (subdomain) {
+      loadSubdomainWebsite();
+    }
+  }, [subdomain]);
+
+  const loadSubdomainWebsite = async () => {
     try {
-      console.log('🌐 Loading subdomain website...');
-      
-      // Get subdomain from URL params (set by middleware)
-      const subdomain = searchParams.get('subdomain');
-      console.log('🔍 Subdomain from searchParams:', subdomain);
-      console.log('🔍 All searchParams:', Object.fromEntries(searchParams.entries()));
-      
-      if (!subdomain) {
-        throw new Error('No subdomain provided');
-      }
-      
-      console.log('🔍 Detected subdomain:', subdomain);
+      console.log('🌐 Loading subdomain website for:', subdomain);
       
       // Skip if it's the main domain
       if (subdomain === 'www' || subdomain === 'api' || subdomain === 'localhost' || subdomain === '127' || subdomain === '0') {
@@ -45,14 +41,6 @@ function SubdomainContent() {
       const data = await response.json();
       console.log('✅ Loaded subdomain website data:', data);
       
-      // Redirect to published URL while keeping subdomain in browser
-      if (data.websiteId) {
-        console.log('🔄 Redirecting to published URL:', `/published/${data.websiteId}`);
-        // Use replace to avoid back button issues
-        window.location.replace(`/published/${data.websiteId}`);
-        return;
-      }
-      
       setWebsite(data);
     } catch (error) {
       console.error('❌ Failed to load subdomain website:', error);
@@ -60,11 +48,7 @@ function SubdomainContent() {
     } finally {
       setLoading(false);
     }
-  }, [searchParams, API_BASE_URL]);
-
-  useEffect(() => {
-    loadSubdomainWebsite();
-  }, [loadSubdomainWebsite]);
+  };
 
   if (loading) {
     return (
@@ -119,20 +103,5 @@ function SubdomainContent() {
         sectionOrder={website.data?.sectionOrder}
       />
     </div>
-  );
-}
-
-export default function SubdomainPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading website...</p>
-        </div>
-      </div>
-    }>
-      <SubdomainContent />
-    </Suspense>
   );
 }

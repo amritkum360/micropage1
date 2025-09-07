@@ -27,11 +27,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // For subdomain requests, rewrite to the subdomain page
-  console.log('🔄 Rewriting to subdomain page for:', subdomain);
+  // For subdomain requests, rewrite to dynamic subdomain route
+  console.log('🔄 Rewriting to dynamic subdomain route for:', subdomain);
   const url = request.nextUrl.clone();
-  url.pathname = `/subdomain`;
-  url.searchParams.set('subdomain', subdomain);
+  url.pathname = `/${subdomain}`;
   
   return NextResponse.rewrite(url);
 }
