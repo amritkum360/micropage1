@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import UniversalTemplate from '@/components/templates/UniversalTemplate';
 import Link from 'next/link';
 
-export default function SubdomainPage() {
+function SubdomainContent() {
   const [website, setWebsite] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -109,5 +109,20 @@ export default function SubdomainPage() {
         sectionOrder={website.data?.sectionOrder}
       />
     </div>
+  );
+}
+
+export default function SubdomainPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading website...</p>
+        </div>
+      </div>
+    }>
+      <SubdomainContent />
+    </Suspense>
   );
 }
