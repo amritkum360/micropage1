@@ -1,9 +1,9 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
-export default function SubdomainPage() {
+function SubdomainContent() {
   const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(true);
@@ -77,5 +77,33 @@ export default function SubdomainPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div style={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      height: "100vh",
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    }}>
+      <div style={{ 
+        color: "white", 
+        fontSize: "2rem",
+        textAlign: "center"
+      }}>
+        Loading...
+      </div>
+    </div>
+  );
+}
+
+export default function SubdomainPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <SubdomainContent />
+    </Suspense>
   );
 }
