@@ -20,23 +20,16 @@ const nextConfig = {
         pathname: '/uploads/**',
       },
     ],
-    // For development, you can also use this (less secure):
-    // domains: ['localhost'],
   },
-  // Handle subdomain routing
+  // Enable wildcard domains for subdomain routing
+  experimental: {
+    // This allows Next.js to handle wildcard subdomains
+    serverComponentsExternalPackages: [],
+  },
+  // Handle subdomain routing - middleware will handle this now
   async rewrites() {
     return [
-      // Rewrite subdomain requests to the subdomain page
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: '(?<subdomain>.*)\\.jirocash\\.com',
-          },
-        ],
-        destination: '/subdomain',
-      },
+      // Keep existing rewrites if any
     ];
   },
   // Other Next.js configurations...

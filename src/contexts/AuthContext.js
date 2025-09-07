@@ -346,7 +346,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Publish website
-  const publishWebsite = async (websiteId, subdomain = null, customDomain = null) => {
+  const publishWebsite = async (websiteId) => {
     if (!token) throw new Error('Not authenticated');
 
     try {
@@ -354,9 +354,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ subdomain, customDomain }),
       });
 
       const data = await response.json();
@@ -511,46 +509,6 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  // Check subdomain availability
-  const checkSubdomain = async (subdomain) => {
-    if (!token) {
-      console.log('No token available for subdomain check');
-      return {
-        available: false,
-        message: 'Not authenticated'
-      };
-    }
-
-    try {
-      console.log('Checking subdomain:', subdomain);
-      console.log('API URL:', `${API_BASE_URL}/websites/check-subdomain/${subdomain}`);
-      
-      const response = await fetch(`${API_BASE_URL}/websites/check-subdomain/${subdomain}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-        console.error('API Error:', errorData);
-        throw new Error(errorData.message || `HTTP ${response.status}: Failed to check subdomain`);
-      }
-
-      const data = await response.json();
-      console.log('Subdomain check result:', data);
-      return data;
-    } catch (error) {
-      console.error('Check subdomain error:', error);
-      // Return a default response instead of throwing
-      return {
-        available: false,
-        message: error.message || 'Failed to check subdomain'
-      };
-    }
-  };
 
   // Save domain
   const saveDomain = async (domainData) => {
@@ -824,7 +782,6 @@ export const AuthProvider = ({ children }) => {
     getSubscriptionPlans,
     createSubscription,
     cancelSubscription,
-    checkSubdomain,
     saveDomain,
     getDomains,
     updateDomain,
