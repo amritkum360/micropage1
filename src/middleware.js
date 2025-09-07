@@ -41,12 +41,24 @@ export function middleware(req) {
     return NextResponse.next();
   }
 
+  // Check if this is a custom domain (not jirocash.com or localhost)
+  const isCustomDomain = !isLocalhost && !host.includes('jirocash.com');
+  
   // Check if this is a subdomain request
   const hasSubdomain = isLocalhost ? 
     (parts.length >= 2 && parts[0] !== 'localhost') : 
     (parts.length >= 3 && parts[0] !== 'www' && parts[0] !== 'jirocash');
   
   console.log('🌐 Has subdomain:', hasSubdomain);
+  console.log('🌐 Is custom domain:', isCustomDomain);
+
+  // Handle custom domains
+  if (isCustomDomain) {
+    console.log('🌐 Processing custom domain:', host);
+    url.pathname = `/custom-domain/${host}`;
+    console.log('🌐 Rewriting to:', url.pathname);
+    return NextResponse.rewrite(url);
+  }
 
   // If no subdomain detected, show main site
   if (!hasSubdomain) {
