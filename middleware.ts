@@ -4,6 +4,8 @@ export function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const pathname = request.nextUrl.pathname;
 
+  console.log('🌐 Middleware - Hostname:', hostname, 'Pathname:', pathname);
+
   // Skip middleware for API routes, static files, and internal Next.js routes
   if (
     pathname.startsWith('/api/') ||
@@ -11,18 +13,22 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/favicon.ico') ||
     pathname.includes('.')
   ) {
+    console.log('⏭️ Skipping middleware for:', pathname);
     return NextResponse.next();
   }
 
   // Extract subdomain from hostname
   const subdomain = getSubdomain(hostname);
+  console.log('🔍 Detected subdomain:', subdomain);
 
   // If no subdomain or it's the main domain, continue normally
   if (!subdomain || isMainDomain(subdomain)) {
+    console.log('➡️ No subdomain or main domain, continuing normally');
     return NextResponse.next();
   }
 
   // For subdomain requests, rewrite to the subdomain page
+  console.log('🔄 Rewriting to subdomain page for:', subdomain);
   const url = request.nextUrl.clone();
   url.pathname = `/subdomain`;
   url.searchParams.set('subdomain', subdomain);

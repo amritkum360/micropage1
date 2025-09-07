@@ -20,6 +20,8 @@ function SubdomainContent() {
       
       // Get subdomain from URL params (set by middleware)
       const subdomain = searchParams.get('subdomain');
+      console.log('🔍 Subdomain from searchParams:', subdomain);
+      console.log('🔍 All searchParams:', Object.fromEntries(searchParams.entries()));
       
       if (!subdomain) {
         throw new Error('No subdomain provided');
