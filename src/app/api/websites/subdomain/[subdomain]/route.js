@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-// Use the backend API instead of direct database connection
+// Use the backend API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export async function GET(request, { params }) {
@@ -16,6 +16,7 @@ export async function GET(request, { params }) {
     }
 
     // Call backend API to get website by subdomain
+    console.log('🔄 Calling backend API:', `${API_BASE_URL}/websites/subdomain/${subdomain}`);
     const backendResponse = await fetch(`${API_BASE_URL}/websites/subdomain/${subdomain}`);
     
     console.log('📊 Backend API response status:', backendResponse.status);
