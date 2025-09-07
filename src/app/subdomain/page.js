@@ -62,7 +62,7 @@ export default function SubdomainPage() {
           marginTop: "1rem",
           opacity: 0.8
         }}>
-          Welcome to {name}'s page!
+          Welcome to {name} page!
         </p>
         <div style={{
           marginTop: "2rem",
