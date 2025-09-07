@@ -11,6 +11,7 @@ import RenewModal from './subscriptions/RenewModal';
 import ExpiryWarning from './subscriptions/ExpiryWarning';
 import SubscriptionStatus from './subscriptions/SubscriptionStatus';
 import useSubscription from './subscriptions/useSubscription';
+import CustomDomainManager from '@/components/CustomDomainManager';
 import { 
   Plus, 
   Edit, 
