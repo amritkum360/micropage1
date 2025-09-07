@@ -4,21 +4,12 @@ import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigation } from '@/contexts/NavigationContext';
 import { useRouter } from 'next/navigation';
+import LandingPage from '@/components/LandingPage';
 
 export default function Home() {
   const { isAuthenticated, loading } = useAuth();
   const { navigateWithLoader } = useNavigation();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated) {
-        navigateWithLoader(router, '/dashboard');
-      } else {
-        navigateWithLoader(router, '/auth');
-      }
-    }
-  }, [isAuthenticated, loading, router]);
 
   if (loading) {
     return (
@@ -31,5 +22,6 @@ export default function Home() {
     );
   }
 
-  return null;
+  // Always show landing page - both authenticated and unauthenticated users can see it
+  return <LandingPage />;
 }

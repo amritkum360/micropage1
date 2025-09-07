@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import UniversalTemplate from '@/components/templates/UniversalTemplate';
 import Link from 'next/link';
 
@@ -8,6 +9,7 @@ export default function SubdomainPage() {
   const [website, setWebsite] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const searchParams = useSearchParams();
 
   // API base URL
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -20,35 +22,22 @@ export default function SubdomainPage() {
     try {
       console.log('🌐 Loading subdomain website...');
       
-      // Get the current host to determine subdomain
-      const host = window.location.host;
-      console.log('🌐 Current host:', host);
-      console.log('🌐 Current URL:', window.location.href);
+      // Get subdomain from URL params (set by middleware)
+      const subdomain = searchParams.get('subdomain');
       
-      // For development, also allow localhost with subdomain
-      if (!host.includes('jirocash.com') && !host.includes('localhost')) {
-        throw new Error('Invalid subdomain request');
+      if (!subdomain) {
+        throw new Error('No subdomain provided');
       }
       
-      const subdomain = host.split('.')[0];
       console.log('🔍 Detected subdomain:', subdomain);
       
       // Skip if it's the main domain
-      if (subdomain === 'www' || subdomain === 'api' || subdomain === '127' || subdomain === '0') {
-        throw new Error('Main domain access');
-      }
-      
-      // For localhost, allow subdomain testing
-      if (host.includes('localhost') && subdomain === 'localhost') {
+      if (subdomain === 'www' || subdomain === 'api' || subdomain === 'localhost' || subdomain === '127' || subdomain === '0') {
         throw new Error('Main domain access');
       }
       
       // Fetch website data from API
-      const response = await fetch(`${API_BASE_URL}/subdomain/${subdomain}`, {
-        headers: {
-          'Host': host // Include the host header for subdomain detection
-        }
-      });
+      const response = await fetch(`${API_BASE_URL}/subdomain/${subdomain}`);
       
       if (!response.ok) {
         const errorData = await response.json();

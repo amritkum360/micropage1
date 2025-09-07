@@ -138,7 +138,7 @@ export default function PopupForm({ section, onInputChange, sectionKey = 'popup'
         <div className="space-y-2">
           {section.image && !section.image.loading && (
             <div className="relative">
-              <Image
+               <Image
                 src={getImageSrc(section.image)}
                 alt="Popup preview"
                 width={400}

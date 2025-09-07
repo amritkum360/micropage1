@@ -26,6 +26,7 @@ import {
 import useNotification from '@/hooks/useNotification';
 import NotificationContainer from '@/components/ui/NotificationContainer';
 import CelebrationAnimation from '@/components/ui/CelebrationAnimation';
+import SubdomainPublishModal from '@/components/SubdomainPublishModal';
 
 function DashboardContent() {
   const { user, logout, getWebsites, deleteWebsite, publishWebsite, unpublishWebsite, updateWebsite, getDomains, saveDomain, updateDomain, checkDomainDNS, getWebsite } = useAuth();
@@ -42,6 +43,8 @@ function DashboardContent() {
   const [dnsStatus, setDnsStatus] = useState({});
   const [checkingDNS, setCheckingDNS] = useState({});
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [selectedWebsiteForPublish, setSelectedWebsiteForPublish] = useState(null);
   const { showSuccess, showError, showWarning, showInfo, notifications, removeNotification } = useNotification();
   
   // Use custom subscription hook
@@ -142,27 +145,19 @@ function DashboardContent() {
     }
   };
 
-  const handlePublishWebsite = async (websiteId) => {
-    setPublishingId(websiteId);
-    try {
-      const result = await publishWebsite(websiteId);
-      setWebsites(websites.map(w => 
-        w._id === websiteId 
-          ? { ...w, isPublished: true, publishedUrl: result.publishedUrl }
-          : w
-      ));
-      showSuccess('🎉 Website published successfully!');
-      triggerCelebration(); // Trigger celebration on successful publish
-    } catch (error) {
-      console.error('Failed to publish website:', error);
-      if (error.message && error.message.includes('subscribe')) {
-        handleShowSubscriptionModal();
-      } else {
-        showError('❌ Failed to publish website. Please try again.');
-      }
-    } finally {
-      setPublishingId(null);
-    }
+  const handlePublishWebsite = (websiteId) => {
+    setSelectedWebsiteForPublish(websiteId);
+    setShowPublishModal(true);
+  };
+
+  const handlePublishSuccess = (result) => {
+    setWebsites(websites.map(w => 
+      w._id === selectedWebsiteForPublish 
+        ? { ...w, isPublished: true, publishedUrl: result.publishedUrl, subdomain: result.subdomain, customDomain: result.customDomain }
+        : w
+    ));
+    showSuccess('🎉 Website published successfully!');
+    triggerCelebration(); // Trigger celebration on successful publish
   };
 
   const handleUnpublishWebsite = async (websiteId) => {
@@ -912,7 +907,7 @@ function DashboardContent() {
                       
                       {website.isPublished && (
                         <a
-                          href={`/published/${website._id}`}
+                          href={website.publishedUrl || `/published/${website._id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
@@ -1051,6 +1046,16 @@ function DashboardContent() {
                   subscriptionPlans={subscriptionPlans}
                   isLoading={creatingSubscription}
                   user={user}
+                />
+
+                <SubdomainPublishModal
+                  isOpen={showPublishModal}
+                  onClose={() => {
+                    setShowPublishModal(false);
+                    setSelectedWebsiteForPublish(null);
+                  }}
+                  websiteId={selectedWebsiteForPublish}
+                  onPublishSuccess={handlePublishSuccess}
                 />
       </div>
     </>

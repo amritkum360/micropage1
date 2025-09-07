@@ -7,10 +7,11 @@ import { useRouter } from 'next/navigation';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 export default function ProtectedRoute({ children }) {
-  const { isAuthenticated, loading, user, completeOnboarding, getProfile } = useAuth();
+  const { isAuthenticated, loading, user, completeOnboarding, getProfile, getWebsites, fixOnboardingStatus } = useAuth();
   const { navigateWithLoader } = useNavigation();
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [checkingWebsites, setCheckingWebsites] = useState(false);
 
   useEffect(() => {
     console.log('🔍 ProtectedRoute - Auth state:', { 
@@ -27,14 +28,46 @@ export default function ProtectedRoute({ children }) {
       console.log('🚪 Redirecting to auth - user not authenticated');
       navigateWithLoader(router, '/auth');
     } else if (!loading && isAuthenticated && user && !user.onboardingCompleted) {
-      console.log('🎯 Showing onboarding modal - user needs to complete onboarding');
-      setShowOnboarding(true);
+      // Check if user already has websites before showing onboarding
+      checkExistingWebsites();
     } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
       console.log('✅ User onboarding completed - allowing dashboard access');
     } else if (loading) {
       console.log('⏳ ProtectedRoute - Still loading authentication...');
     }
   }, [isAuthenticated, loading, user, router, navigateWithLoader]);
+
+  const checkExistingWebsites = async () => {
+    if (checkingWebsites) return;
+    
+    setCheckingWebsites(true);
+    try {
+      console.log('🔍 Checking if user already has websites...');
+      const websites = await getWebsites();
+      console.log('📊 Found websites:', websites?.length || 0);
+      
+      if (websites && websites.length > 0) {
+        console.log('✅ User already has websites, fixing onboarding status');
+        // User has websites but onboardingCompleted is false, fix it
+        try {
+          await fixOnboardingStatus();
+          console.log('✅ Onboarding status fixed successfully');
+        } catch (error) {
+          console.error('❌ Failed to fix onboarding status:', error);
+        }
+        setShowOnboarding(false);
+      } else {
+        console.log('🎯 No existing websites found, showing onboarding modal');
+        setShowOnboarding(true);
+      }
+    } catch (error) {
+      console.error('❌ Error checking websites:', error);
+      // If there's an error, show onboarding to be safe
+      setShowOnboarding(true);
+    } finally {
+      setCheckingWebsites(false);
+    }
+  };
 
   const handleOnboardingComplete = async (updatedUser) => {
     console.log('🎯 Onboarding completed, updated user:', updatedUser);
@@ -60,12 +93,14 @@ export default function ProtectedRoute({ children }) {
     }, 1000);
   };
 
-  if (loading) {
+  if (loading || checkingWebsites) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">
+            {checkingWebsites ? 'Checking your websites...' : 'Loading...'}
+          </p>
         </div>
       </div>
     );

@@ -346,7 +346,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Publish website
-  const publishWebsite = async (websiteId) => {
+  const publishWebsite = async (websiteId, subdomain = null, customDomain = null) => {
     if (!token) throw new Error('Not authenticated');
 
     try {
@@ -354,7 +354,9 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ subdomain, customDomain }),
       });
 
       const data = await response.json();
@@ -521,9 +523,9 @@ export const AuthProvider = ({ children }) => {
 
     try {
       console.log('Checking subdomain:', subdomain);
-      console.log('API URL:', `${API_BASE_URL}/domains/check-subdomain/${subdomain}`);
+      console.log('API URL:', `${API_BASE_URL}/websites/check-subdomain/${subdomain}`);
       
-      const response = await fetch(`${API_BASE_URL}/domains/check-subdomain/${subdomain}`, {
+      const response = await fetch(`${API_BASE_URL}/websites/check-subdomain/${subdomain}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -762,6 +764,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Fix onboarding status for users who already have websites
+  const fixOnboardingStatus = async () => {
+    if (!token) throw new Error('Not authenticated');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/fix-onboarding-status`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fix onboarding status');
+      }
+
+      // Update local user state and localStorage
+      setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      return data;
+    } catch (error) {
+      console.error('Fix onboarding status error:', error);
+      throw error;
+    }
+  };
+
   const isAuthenticated = !!token;
   
   // Debug logging for authentication state
@@ -803,6 +833,7 @@ export const AuthProvider = ({ children }) => {
     checkDomainDNS,
     updateProfile,
     completeOnboarding,
+    fixOnboardingStatus,
     isAuthenticated,
   };
 
