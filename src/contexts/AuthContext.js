@@ -23,35 +23,46 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is logged in on app start
   useEffect(() => {
-    try {
-      console.log('🔍 AuthContext - Initializing authentication...');
-      const savedToken = localStorage.getItem('token');
-      const savedUser = localStorage.getItem('user');
-      
-      console.log('🔍 AuthContext - Saved token:', savedToken ? 'Found' : 'Not found');
-      console.log('🔍 AuthContext - Saved user:', savedUser ? 'Found' : 'Not found');
-      
-      if (savedToken && savedUser) {
-        try {
-          const parsedUser = JSON.parse(savedUser);
-          setToken(savedToken);
-          setUser(parsedUser);
-          console.log('✅ AuthContext - User authenticated from localStorage');
-        } catch (parseError) {
-          console.error('❌ AuthContext - Failed to parse user data:', parseError);
-          // Clear invalid data
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+    const initializeAuth = async () => {
+      try {
+        console.log('🔍 AuthContext - Initializing authentication...');
+        const savedToken = localStorage.getItem('token');
+        const savedUser = localStorage.getItem('user');
+        
+        console.log('🔍 AuthContext - Saved token:', savedToken ? 'Found' : 'Not found');
+        console.log('🔍 AuthContext - Saved user:', savedUser ? 'Found' : 'Not found');
+        
+        if (savedToken && savedUser) {
+          try {
+            const parsedUser = JSON.parse(savedUser);
+            // Set both token and user together to avoid race conditions
+            setToken(savedToken);
+            setUser(parsedUser);
+            console.log('✅ AuthContext - User authenticated from localStorage');
+          } catch (parseError) {
+            console.error('❌ AuthContext - Failed to parse user data:', parseError);
+            // Clear invalid data
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setToken(null);
+            setUser(null);
+          }
+        } else {
+          console.log('ℹ️ AuthContext - No saved authentication found');
+          setToken(null);
+          setUser(null);
         }
-      } else {
-        console.log('ℹ️ AuthContext - No saved authentication found');
+      } catch (error) {
+        console.error('❌ AuthContext - Error during initialization:', error);
+        setToken(null);
+        setUser(null);
+      } finally {
+        setLoading(false);
+        console.log('✅ AuthContext - Loading set to false');
       }
-    } catch (error) {
-      console.error('❌ AuthContext - Error during initialization:', error);
-    } finally {
-      setLoading(false);
-      console.log('✅ AuthContext - Loading set to false');
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   // Login function
@@ -177,17 +188,25 @@ export const AuthProvider = ({ children }) => {
     if (savedToken && savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
+        // Set both token and user together to maintain consistency
         setToken(savedToken);
         setUser(parsedUser);
         console.log('✅ RefreshAuth - Authentication refreshed successfully');
         return true;
       } catch (error) {
         console.error('❌ RefreshAuth - Failed to refresh auth:', error);
-        logout();
+        // Clear invalid data and reset state
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setToken(null);
+        setUser(null);
         return false;
       }
     }
     console.log('❌ RefreshAuth - No saved authentication found');
+    // Ensure state is cleared if no saved auth
+    setToken(null);
+    setUser(null);
     return false;
   };
 
@@ -895,6 +914,17 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated
     });
   }, [token, user, loading, isAuthenticated]);
+
+  // Additional effect to ensure state consistency
+  useEffect(() => {
+    if (!loading && token && user) {
+      // Ensure isAuthenticated is properly set when both token and user are present
+      const currentIsAuthenticated = !!token;
+      if (currentIsAuthenticated !== isAuthenticated) {
+        console.log('🔧 AuthContext - Fixing authentication state consistency');
+      }
+    }
+  }, [loading, token, user, isAuthenticated]);
 
   const value = {
     user,

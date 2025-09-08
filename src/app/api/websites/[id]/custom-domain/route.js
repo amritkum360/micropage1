@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // Use the backend API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export async function POST(request, { params }) {
   try {

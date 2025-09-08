@@ -79,18 +79,31 @@ export default function ProtectedRoute({ children }) {
       return;
     }
 
-    if (!loading && !isAuthenticated) {
+    // Wait for authentication to be fully loaded
+    if (loading) {
+      console.log('⏳ ProtectedRoute - Still loading authentication...');
+      return;
+    }
+
+    // If not authenticated after loading is complete, redirect to auth
+    if (!isAuthenticated || !user) {
       console.log('🚪 Redirecting to auth - user not authenticated');
       navigateWithLoader(router, '/auth');
-    } else if (!loading && isAuthenticated && user && !user.onboardingCompleted && !hasCheckedWebsites) {
-      // Check if user already has websites before showing onboarding
-      // Only check if we haven't checked yet
+      return;
+    }
+
+    // If authenticated but onboarding not completed and we haven't checked websites yet
+    if (!user.onboardingCompleted && !hasCheckedWebsites) {
+      console.log('🔍 User not onboarded, checking for existing websites...');
       checkExistingWebsites();
-    } else if (!loading && isAuthenticated && user && user.onboardingCompleted) {
+      return;
+    }
+
+    // If onboarding is completed, allow access
+    if (user.onboardingCompleted) {
       console.log('✅ User onboarding completed - allowing dashboard access');
       setShowOnboarding(false); // Make sure onboarding is closed
-    } else if (loading) {
-      console.log('⏳ ProtectedRoute - Still loading authentication...');
+      return;
     }
   }, [isAuthenticated, loading, user, router, navigateWithLoader, checkExistingWebsites, hasCheckedWebsites, isSubdomainPage]);
 
