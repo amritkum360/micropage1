@@ -30,7 +30,7 @@ import NotificationContainer from '@/components/ui/NotificationContainer';
 import CelebrationAnimation from '@/components/ui/CelebrationAnimation';
 
 function DashboardContent() {
-  const { user, logout, getWebsites, deleteWebsite, publishWebsite, unpublishWebsite, updateWebsite, getDomains, saveDomain, updateDomain, checkDomainDNS, getWebsite } = useAuth();
+  const { user, logout, getWebsites, deleteWebsite, publishWebsite, unpublishWebsite, updateWebsite, getDomains, saveDomain, updateDomain, checkDomainDNS, getWebsite, checkCustomDomain } = useAuth();
   const { navigateWithLoader } = useNavigation();
   const [websites, setWebsites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +43,7 @@ function DashboardContent() {
   const [addingDomain, setAddingDomain] = useState(false);
   const [dnsStatus, setDnsStatus] = useState({});
   const [checkingDNS, setCheckingDNS] = useState({});
+  const [customDomainStatus, setCustomDomainStatus] = useState({ checking: false, available: null, message: '' });
   const [showCelebration, setShowCelebration] = useState(false);
   const { showSuccess, showError, showWarning, showInfo, notifications, removeNotification } = useNotification();
   
@@ -191,8 +192,46 @@ function DashboardContent() {
   const handleAddDomain = (website) => {
     setSelectedWebsite(website);
     setCustomDomain(website.data?.customDomain || '');
+    setCustomDomainStatus({ checking: false, available: null, message: '' });
     setShowDomainModal(true);
   };
+
+  // Check custom domain availability
+  const checkCustomDomainAvailability = useCallback(async (domain) => {
+    if (!domain || domain.length < 3) {
+      setCustomDomainStatus({ checking: false, available: null, message: '' });
+      return;
+    }
+
+    setCustomDomainStatus({ checking: true, available: null, message: 'Checking availability...' });
+
+    try {
+      const result = await checkCustomDomain(domain);
+      setCustomDomainStatus({
+        checking: false,
+        available: result.available,
+        message: result.message
+      });
+    } catch (error) {
+      console.error('Custom domain check error:', error);
+      setCustomDomainStatus({
+        checking: false,
+        available: false,
+        message: error.message || 'Error checking domain availability'
+      });
+    }
+  }, [checkCustomDomain]);
+
+  // Debounce custom domain checking
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (customDomain && showDomainModal) {
+        checkCustomDomainAvailability(customDomain);
+      }
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, [customDomain, showDomainModal, checkCustomDomainAvailability]);
 
   const handleSaveDomain = async () => {
     if (!customDomain.trim()) {
@@ -205,6 +244,35 @@ function DashboardContent() {
     if (!domainRegex.test(customDomain)) {
       showError('❌ Please enter a valid domain name (e.g., example.com)');
       return;
+    }
+
+    // Check if domain is available
+    if (customDomainStatus.checking) {
+      showError('❌ Please wait while we check domain availability');
+      return;
+    }
+
+    if (customDomainStatus.available === false) {
+      showError(`❌ ${customDomainStatus.message}`);
+      return;
+    }
+
+    // If we haven't checked yet, check now
+    if (customDomainStatus.available === null) {
+      try {
+        await checkCustomDomainAvailability(customDomain);
+        // Wait a moment for the check to complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Check again after the async operation
+        if (customDomainStatus.available === false) {
+          showError(`❌ ${customDomainStatus.message}`);
+          return;
+        }
+      } catch (error) {
+        showError('❌ Failed to verify domain availability');
+        return;
+      }
     }
 
     setAddingDomain(true);
@@ -964,13 +1032,51 @@ function DashboardContent() {
                    <label className="block text-sm font-medium text-gray-700 mb-2 font-body">
                      Domain Name
                    </label>
-                   <input
-                     type="text"
-                     value={customDomain}
-                     onChange={(e) => setCustomDomain(e.target.value)}
-                     placeholder="example.com"
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                   />
+                   <div className="relative">
+                     <input
+                       type="text"
+                       value={customDomain}
+                       onChange={(e) => setCustomDomain(e.target.value)}
+                       placeholder="example.com"
+                       className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
+                         customDomainStatus.available === true ? 'border-green-300 bg-green-50' :
+                         customDomainStatus.available === false ? 'border-red-300 bg-red-50' :
+                         'border-gray-300'
+                       }`}
+                     />
+                     {customDomainStatus.checking && (
+                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-500"></div>
+                       </div>
+                     )}
+                     {!customDomainStatus.checking && customDomainStatus.available === true && (
+                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                         <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                           <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                           </svg>
+                         </div>
+                       </div>
+                     )}
+                     {!customDomainStatus.checking && customDomainStatus.available === false && (
+                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                         <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                           <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                           </svg>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+                   {customDomainStatus.message && (
+                     <p className={`mt-1 text-xs ${
+                       customDomainStatus.available === true ? 'text-green-600' :
+                       customDomainStatus.available === false ? 'text-red-600' :
+                       'text-gray-500'
+                     }`}>
+                       {customDomainStatus.message}
+                     </p>
+                   )}
                  </div>
                  
                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
@@ -1010,10 +1116,12 @@ function DashboardContent() {
                  </button>
                  <button
                    onClick={handleSaveDomain}
-                   disabled={addingDomain || !customDomain.trim()}
+                   disabled={addingDomain || !customDomain.trim() || customDomainStatus.checking || customDomainStatus.available === false}
                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-md transition-colors"
                  >
-                   {addingDomain ? <span className="font-body">Adding...</span> : <span className="font-body">Add Domain</span>}
+                   {addingDomain ? <span className="font-body">Adding...</span> : 
+                    customDomainStatus.checking ? <span className="font-body">Checking...</span> :
+                    <span className="font-body">Add Domain</span>}
                  </button>
                </div>
              </div>

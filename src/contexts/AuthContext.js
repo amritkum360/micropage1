@@ -903,6 +903,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Check custom domain availability
+  const checkCustomDomain = async (domain) => {
+    if (!token) throw new Error('Not authenticated');
+
+    try {
+      console.log('🔍 Frontend: Checking custom domain:', domain);
+      console.log('🔍 Frontend: API URL:', `${API_BASE_URL}/domains/check-custom-domain/${domain}`);
+      console.log('🔍 Frontend: Token:', token ? 'Present' : 'Missing');
+      
+      const response = await fetch(`${API_BASE_URL}/domains/check-custom-domain/${domain}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      console.log('🔍 Frontend: Response status:', response.status);
+      const data = await response.json();
+      console.log('🔍 Frontend: Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to check custom domain');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('❌ Frontend: Check custom domain error:', error);
+      throw error;
+    }
+  };
+
   const isAuthenticated = !!token;
   
   // Debug logging for authentication state
@@ -958,6 +988,7 @@ export const AuthProvider = ({ children }) => {
     completeOnboarding,
     fixOnboardingStatus,
     checkSubdomain,
+    checkCustomDomain,
     isAuthenticated,
     debugAuth,
   };
