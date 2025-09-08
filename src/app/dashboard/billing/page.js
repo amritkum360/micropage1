@@ -47,7 +47,7 @@ function BillingHistoryContent() {
       console.log('🔄 Loading billing history for user:', userId);
       
       // Fetch billing history from backend
-      const response = await fetch(`http://localhost:5000/api/razorpay/payments?userId=${userId}`, {
+      const response = await fetch(`https://micropage.onrender.com/api/razorpay/payments?userId=${userId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
