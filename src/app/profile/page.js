@@ -191,7 +191,7 @@ function ProfileContent() {
   };
 
   // API base URL
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://micropage.onrender.com/api';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handlePasswordChange = async () => {
     setPasswordLoading(true);

@@ -5,7 +5,7 @@
 
 import { getRazorpayKey, getBackendUrl, getPlanDetails } from '@/config/razorpay';
 
-const RAZORPAY_BACKEND_URL = 'https://micropage.onrender.com/api/razorpay';
+const RAZORPAY_BACKEND_URL = 'http://localhost:5000/api/razorpay';
 const RAZORPAY_KEY_ID = getRazorpayKey();
 
 /**

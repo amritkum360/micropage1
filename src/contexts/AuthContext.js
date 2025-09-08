@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // API base URL
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://micropage.onrender.com/api';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api' ;
   // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://micropage.onrender.com/api';
 
   // Check if user is logged in on app start
@@ -131,6 +131,94 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Check if token is valid
+  const isTokenValid = () => {
+    if (!token) {
+      console.log('🔍 Token validation: No token provided');
+      return false;
+    }
+    
+    try {
+      // Check if token has the right format (3 parts separated by dots)
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        console.log('🔍 Token validation: Invalid JWT format');
+        return false;
+      }
+      
+      // Basic JWT token validation (check if it's not expired)
+      const payload = JSON.parse(atob(parts[1]));
+      const currentTime = Date.now() / 1000;
+      const isValid = payload.exp > currentTime;
+      
+      console.log('🔍 Token validation:', {
+        exp: payload.exp,
+        currentTime: currentTime,
+        isValid: isValid,
+        timeUntilExpiry: payload.exp - currentTime
+      });
+      
+      return isValid;
+    } catch (error) {
+      console.error('❌ Token validation error:', error);
+      return false;
+    }
+  };
+
+  // Refresh authentication status
+  const refreshAuth = async () => {
+    console.log('🔍 RefreshAuth - Attempting to refresh authentication...');
+    const savedToken = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+    
+    console.log('🔍 RefreshAuth - Saved token present:', !!savedToken);
+    console.log('🔍 RefreshAuth - Saved user present:', !!savedUser);
+    
+    if (savedToken && savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setToken(savedToken);
+        setUser(parsedUser);
+        console.log('✅ RefreshAuth - Authentication refreshed successfully');
+        return true;
+      } catch (error) {
+        console.error('❌ RefreshAuth - Failed to refresh auth:', error);
+        logout();
+        return false;
+      }
+    }
+    console.log('❌ RefreshAuth - No saved authentication found');
+    return false;
+  };
+
+  // Debug authentication status
+  const debugAuth = () => {
+    const savedToken = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+    
+    console.log('🔍 DEBUG AUTH STATUS:');
+    console.log('  Current token state:', !!token);
+    console.log('  Current user state:', !!user);
+    console.log('  Saved token in localStorage:', !!savedToken);
+    console.log('  Saved user in localStorage:', !!savedUser);
+    console.log('  Token valid:', isTokenValid());
+    console.log('  Is authenticated:', isAuthenticated);
+    
+    if (savedToken) {
+      console.log('  Token length:', savedToken.length);
+      console.log('  Token preview:', savedToken.substring(0, 20) + '...');
+    }
+    
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        console.log('  User data:', parsedUser);
+      } catch (error) {
+        console.log('  User data parse error:', error);
+      }
+    }
+  };
+
   // Get user profile
   const getProfile = async () => {
     if (!token) return null;
@@ -185,22 +273,8 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.message || 'Failed to save website');
       }
 
-      // Save domain if subdomain is provided
-      if (websiteData.data && websiteData.data.subdomain) {
-        try {
-          const domainData = {
-            websiteId: data.website._id,
-            name: websiteData.name,
-            subdomain: websiteData.data.subdomain
-          };
-          
-          await saveDomain(domainData);
-          console.log('Domain saved successfully');
-        } catch (domainError) {
-          console.error('Failed to save domain:', domainError);
-          // Don't throw error here, website is already saved
-        }
-      }
+      // Website saved successfully - no need to save domain separately
+      console.log('Website saved successfully');
 
       return data;
     } catch (error) {
@@ -269,6 +343,11 @@ export const AuthProvider = ({ children }) => {
   const updateWebsite = async (websiteId, websiteData) => {
     if (!token) throw new Error('Not authenticated');
 
+    console.log('🔍 AuthContext - updateWebsite called');
+    console.log('🔍 AuthContext - Website ID:', websiteId);
+    console.log('🔍 AuthContext - Website data:', JSON.stringify(websiteData, null, 2));
+    console.log('🔍 AuthContext - API URL:', `${API_BASE_URL}/websites/${websiteId}`);
+
     try {
       const response = await fetch(`${API_BASE_URL}/websites/${websiteId}`, {
         method: 'PUT',
@@ -279,45 +358,23 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(websiteData),
       });
 
+      console.log('🔍 AuthContext - Response status:', response.status);
+      console.log('🔍 AuthContext - Response headers:', Object.fromEntries(response.headers.entries()));
+
       const data = await response.json();
+      console.log('🔍 AuthContext - Response data:', JSON.stringify(data, null, 2));
 
       if (!response.ok) {
+        console.error('❌ AuthContext - Update failed:', data);
         throw new Error(data.message || 'Failed to update website');
       }
 
-      // Update domain if subdomain is provided
-      if (websiteData.data && websiteData.data.subdomain) {
-        try {
-          // First get existing domains to find the domain for this website
-          const domains = await getDomains();
-          const existingDomain = domains.find(d => d.websiteId === websiteId);
-          
-          if (existingDomain) {
-            // Update existing domain
-            await updateDomain(existingDomain._id, {
-              name: websiteData.name,
-              subdomain: websiteData.data.subdomain
-            });
-            console.log('Domain updated successfully');
-          } else {
-            // Create new domain
-            const domainData = {
-              websiteId: websiteId,
-              name: websiteData.name,
-              subdomain: websiteData.data.subdomain
-            };
-            await saveDomain(domainData);
-            console.log('Domain created successfully');
-          }
-        } catch (domainError) {
-          console.error('Failed to update domain:', domainError);
-          // Don't throw error here, website is already updated
-        }
-      }
+      // Website updated successfully - no need to save domain separately
+      console.log('✅ AuthContext - Website updated successfully');
 
       return data;
     } catch (error) {
-      console.error('Update website error:', error);
+      console.error('❌ AuthContext - Update website error:', error);
       throw error;
     }
   };
@@ -512,7 +569,28 @@ export const AuthProvider = ({ children }) => {
 
   // Save domain
   const saveDomain = async (domainData) => {
-    if (!token) throw new Error('Not authenticated');
+    console.log('🔍 SaveDomain - Starting domain save process...');
+    debugAuth(); // Debug current auth status
+    console.log('🔍 SaveDomain - Token present:', !!token);
+    console.log('🔍 SaveDomain - Token length:', token ? token.length : 0);
+    console.log('🔍 SaveDomain - Token starts with:', token ? token.substring(0, 20) + '...' : 'null');
+    console.log('🔍 SaveDomain - Token valid:', isTokenValid());
+    console.log('🔍 SaveDomain - Domain data:', domainData);
+    console.log('🔍 SaveDomain - API URL:', `${API_BASE_URL}/domains`);
+
+    if (!token) {
+      console.error('❌ SaveDomain - No authentication token found');
+      // Try to refresh auth from localStorage
+      const refreshed = await refreshAuth();
+      if (!refreshed) {
+        throw new Error('Not authenticated - please log in again');
+      }
+    }
+
+    if (!isTokenValid()) {
+      console.error('❌ SaveDomain - Token is expired or invalid');
+      throw new Error('Your session has expired - please log in again');
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/domains`, {
@@ -524,15 +602,41 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(domainData),
       });
 
-      const data = await response.json();
+      console.log('🔍 SaveDomain - Response status:', response.status);
+      console.log('🔍 SaveDomain - Response headers:', Object.fromEntries(response.headers.entries()));
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to save domain');
+      let data = {};
+      try {
+        const responseText = await response.text();
+        console.log('🔍 SaveDomain - Raw response text:', responseText);
+        
+        if (responseText) {
+          data = JSON.parse(responseText);
+        }
+        console.log('🔍 SaveDomain - Parsed response data:', data);
+      } catch (parseError) {
+        console.error('❌ SaveDomain - JSON parse error:', parseError);
+        throw new Error(`Invalid response from server (${response.status})`);
       }
 
+      if (!response.ok) {
+        console.error('❌ SaveDomain - API error:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: data,
+          url: `${API_BASE_URL}/domains`
+        });
+        throw new Error(data.message || `Failed to save domain (${response.status})`);
+      }
+
+      console.log('✅ SaveDomain - Domain saved successfully');
       return data;
     } catch (error) {
-      console.error('Save domain error:', error);
+      console.error('❌ SaveDomain - Error details:', {
+        message: error.message,
+        stack: error.stack,
+        domainData: domainData
+      });
       throw error;
     }
   };
@@ -800,6 +904,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     getProfile,
+    isTokenValid,
+    refreshAuth,
     saveWebsite,
     getWebsites,
     getWebsite,
@@ -823,6 +929,7 @@ export const AuthProvider = ({ children }) => {
     fixOnboardingStatus,
     checkSubdomain,
     isAuthenticated,
+    debugAuth,
   };
 
   return (

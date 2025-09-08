@@ -36,7 +36,7 @@ export default function DebugPage() {
       <h2>API Tests:</h2>
       <button onClick={async () => {
         try {
-          const response = await fetch('https://micropage.onrender.com/api/subdomain/amritkumars');
+          const response = await fetch('http://localhost:5000/api/subdomain/amritkumars');
           const data = await response.json();
           console.log('API Response:', data);
           alert('Check console for API response');

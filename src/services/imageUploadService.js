@@ -2,7 +2,7 @@
  * Service for handling image uploads to the server
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://micropage.onrender.com/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ;
 
 /**
  * Upload an image file to the server

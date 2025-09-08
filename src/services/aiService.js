@@ -2,7 +2,7 @@
  * AI Service for generating website content using OpenAI API
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://micropage.onrender.com/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ;
 
 /**
  * Generate website content using AI

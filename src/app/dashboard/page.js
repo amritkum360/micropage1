@@ -218,6 +218,10 @@ function DashboardContent() {
         customDomain: customDomain.trim()
       };
 
+      console.log('🔍 Frontend - Current website data:', currentWebsite.data);
+      console.log('🔍 Frontend - Updated data:', updatedData);
+      console.log('🔍 Frontend - Custom domain to save:', customDomain.trim());
+
       const result = await updateWebsite(selectedWebsite._id, {
         name: selectedWebsite.name,
         data: updatedData
@@ -234,30 +238,8 @@ function DashboardContent() {
 
       console.log('Updated website:', updatedWebsite);
 
-      // Update domain in domains collection
-      try {
-        const domains = await getDomains();
-        const existingDomain = domains.find(d => d.websiteId === selectedWebsite._id);
-        
-        if (existingDomain) {
-          // Update existing domain
-          await updateDomain(existingDomain._id, {
-            customDomain: customDomain.trim()
-          });
-          console.log('Domain updated in domains collection');
-        } else {
-          // Create new domain entry
-          await saveDomain({
-            websiteId: selectedWebsite._id,
-            name: selectedWebsite.name,
-            customDomain: customDomain.trim()
-          });
-          console.log('Domain created in domains collection');
-        }
-      } catch (domainError) {
-        console.error('Failed to update domain in domains collection:', domainError);
-        // Don't show error to user as website is already updated
-      }
+      // Website updated successfully with custom domain
+      console.log('Custom domain added to website successfully');
 
       // Update local state with the response from backend
       setWebsites(websites.map(w => 

@@ -16,7 +16,7 @@ export const RAZORPAY_CONFIG = {
   PROD_KEY_SECRET: 'YOUR_LIVE_KEY_SECRET', // Only for backend
   
   // Backend URLs - Now using local backend
-  BACKEND_URL: 'https://micropage.onrender.com/api/razorpay',
+  BACKEND_URL: 'http://localhost:5000/api/razorpay',
   
   // Payment Plans
   PLANS: {
